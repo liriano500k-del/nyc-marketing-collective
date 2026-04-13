@@ -1,17 +1,62 @@
+'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
+const slides = [
+  {
+    image: '/images/hero-1.png',
+    title: 'Marketing the NYC Way.',
+    subtitle: "Precision-driven growth for the world's most ambitious brands. Based in the heart of Silicon Alley.",
+  },
+  {
+    image: '/images/hero-2.png',
+    title: 'Data-Driven Dominance.',
+    subtitle: 'We turn raw data into unfair market advantages through proprietary growth algorithms.',
+  },
+  {
+    image: '/images/hero-3.png',
+    title: 'Creative Collective.',
+    subtitle: 'Visual storytelling that stops the scroll and starts the conversion conversation.',
+  }
+]
+
 export default function Home() {
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length)
+    }, 6000)
+    return () => clearInterval(timer)
+  }, [])
+
   return (
     <main>
       <header className="hero">
+        {slides.map((slide, index) => (
+          <div 
+            key={index}
+            className={`hero-slide ${index === current ? 'active' : ''}`}
+            style={{ backgroundImage: `url(${slide.image})` }}
+          />
+        ))}
         <div className="hero-overlay"></div>
         <div className="container hero-content">
-          <h1 className="fade-in">Marketing the <span>NYC Way.</span></h1>
-          <p className="fade-in">Precision-driven growth for the world's most ambitious brands. Based in the heart of Silicon Alley.</p>
+          <h1 className="fade-in">{slides[current].title.split('.')[0]}<span>.</span></h1>
+          <p className="fade-in">{slides[current].subtitle}</p>
           <div className="hero-btns fade-in">
             <Link href="/portfolio" className="btn-primary">View our Work</Link>
             <Link href="/services" className="btn-secondary">Our Capabilities</Link>
           </div>
+        </div>
+        <div className="slide-dots">
+          {slides.map((_, index) => (
+            <div 
+              key={index} 
+              className={`dot ${index === current ? 'active' : ''}`}
+              onClick={() => setCurrent(index)}
+            />
+          ))}
         </div>
       </header>
 
